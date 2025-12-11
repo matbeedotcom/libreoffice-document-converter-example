@@ -759,7 +759,7 @@ export default function ConverterApp() {
                         100% private — your files never leave your browser. No uploads, no server, no data collection.
                     </p>
                     <p className="powered-by">
-                        Powered by <a href="https://github.com/matbeedotcom/libreoffice-converter" target="_blank" rel="noreferrer">@matbeedotcom/libreoffice-document-converter</a>
+                        Powered by <a href="https://github.com/matbeedotcom/libreoffice-document-converter" target="_blank" rel="noreferrer">@matbeedotcom/libreoffice-document-converter</a>
                     </p>
                 </header>
 
