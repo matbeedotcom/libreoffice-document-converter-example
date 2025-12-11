@@ -31,7 +31,7 @@ export default function manifest(): MetadataRoute.Manifest {
         src: "/apple-icon",
         sizes: "180x180",
         type: "image/png",
-        purpose: "apple touch icon",
+        purpose: "any",
       },
     ],
     screenshots: [
