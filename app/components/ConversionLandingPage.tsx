@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import type { OutputFormat } from "@matbee/libreoffice-converter/types";
 
 const ConverterApp = dynamic(() => import("./ConverterApp"), { ssr: false });
 
 export interface ConversionType {
   from: string;
   fromLabel: string;
-  to: string;
+  to: OutputFormat;
   toLabel: string;
   icon: string;
   description: string;
@@ -64,7 +65,7 @@ export default function ConversionLandingPage({ conversion }: ConversionLandingP
 
       {/* Converter Section */}
       <section className="converter-section" id="converter">
-        <ConverterApp />
+        <ConverterApp defaultOutputFormat={conversion.to} />
       </section>
 
       {/* Features Section */}

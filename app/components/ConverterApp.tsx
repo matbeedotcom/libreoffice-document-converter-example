@@ -111,10 +111,14 @@ import dynamic from 'next/dynamic';
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false });
 const BatchPanel = dynamic(() => import('./BatchPanel'), { ssr: false });
 
-export default function ConverterApp() {
+interface ConverterAppProps {
+    defaultOutputFormat?: OutputFormat;
+}
+
+export default function ConverterApp({ defaultOutputFormat = 'pdf' }: ConverterAppProps) {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [fileBuffer, setFileBuffer] = useState<ArrayBuffer | null>(null);
-    const [outputFormat, setOutputFormat] = useState<OutputFormat>('pdf');
+    const [outputFormat, setOutputFormat] = useState<OutputFormat>(defaultOutputFormat);
     const [isConverting, setIsConverting] = useState(false);
     const [isLoadingPreviews, setIsLoadingPreviews] = useState(false);
     const [progress, setProgress] = useState({ percent: 0, message: '' });

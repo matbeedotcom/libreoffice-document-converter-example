@@ -217,6 +217,43 @@ const jsonLd = {
         },
       ],
     },
+    {
+      "@type": "HowTo",
+      "@id": `${siteUrl}/#howto`,
+      name: "How to Convert Documents Online for Free",
+      description: "Convert Word, Excel, PowerPoint, and PDF files instantly in your browser with complete privacy.",
+      totalTime: "PT1M",
+      tool: {
+        "@type": "HowToTool",
+        name: "Web Browser with WebAssembly support",
+      },
+      step: [
+        {
+          "@type": "HowToStep",
+          name: "Upload Your Document",
+          text: "Click 'Select Files' or drag and drop your document into the converter. Supports Word, Excel, PowerPoint, PDF, and more.",
+          position: 1,
+        },
+        {
+          "@type": "HowToStep",
+          name: "Choose Output Format",
+          text: "Select your desired output format from the dropdown menu (PDF, DOCX, XLSX, PPTX, etc.).",
+          position: 2,
+        },
+        {
+          "@type": "HowToStep",
+          name: "Convert",
+          text: "Click 'Convert & Download'. Your file is processed instantly in your browser - nothing is uploaded to any server.",
+          position: 3,
+        },
+        {
+          "@type": "HowToStep",
+          name: "Download",
+          text: "Your converted file downloads automatically. For batch conversions, you'll receive a ZIP archive.",
+          position: 4,
+        },
+      ],
+    },
   ],
 };
 
