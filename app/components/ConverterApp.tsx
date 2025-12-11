@@ -582,6 +582,10 @@ export default function ConverterApp() {
             } else if (entry?.isFile) {
                 const file = e.dataTransfer.files[i];
                 if (file) collectedFiles.push(file);
+            } else if (!entry) {
+                // Fallback for environments where webkitGetAsEntry is not available
+                const file = e.dataTransfer.files[i];
+                if (file) collectedFiles.push(file);
             }
         }
 
