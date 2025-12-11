@@ -203,6 +203,38 @@ export default function ConverterApp() {
         }
     }, [getConverter]);
 
+    // Initialize batch mode with files
+    const initBatchMode = useCallback((files: File[], folderName: string) => {
+        const batchFiles: BatchFile[] = files.map((file, index) => {
+            const ext = getFileExtension(file.name);
+            const isSupported = isSupportedFormat(file.name);
+
+            let status: BatchFileStatus = 'ready';
+            if (!isSupported) {
+                status = 'unsupported';
+            }
+
+            return {
+                id: `${Date.now()}-${index}`,
+                file,
+                status,
+                outputName: file.name.replace(/\.[^.]+$/, `.${outputFormat}`),
+            };
+        });
+
+        setBatchFiles(batchFiles);
+        setBatchFolderName(folderName);
+        setBatchProgress({
+            current: 0,
+            total: batchFiles.filter((f) => f.status !== 'unsupported').length,
+            converted: 0,
+            copied: 0,
+            failed: 0,
+        });
+        setZipFiles([]);
+        setIsBatchMode(true);
+    }, [outputFormat]);
+
     const [visiblePages, setVisiblePages] = useState<Set<number>>(new Set());
     const visiblePagesRef = useRef<Set<number>>(new Set());
     const processingQueueRef = useRef<boolean>(false);
