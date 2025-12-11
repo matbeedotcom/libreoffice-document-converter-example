@@ -235,6 +235,129 @@ export default function ConverterApp() {
         setIsBatchMode(true);
     }, [outputFormat]);
 
+    // Process batch conversion
+    const handleBatchConvert = useCallback(async () => {
+        setIsBatchConverting(true);
+        await clearAllConvertedFiles();
+
+        const converter = await getConverter();
+        const timestamp = Date.now();
+        let converted = 0;
+        let copied = 0;
+        let failed = 0;
+        let current = 0;
+
+        const eligibleFiles = batchFiles.filter(
+            (f) => f.status !== 'unsupported'
+        );
+
+        for (const batchFile of eligibleFiles) {
+            current++;
+            const ext = getFileExtension(batchFile.file.name);
+            const storageKey = `batch-${timestamp}-${batchFile.id}`;
+
+            // Update status to converting
+            setBatchFiles((prev) =>
+                prev.map((f) =>
+                    f.id === batchFile.id ? { ...f, status: 'converting' as BatchFileStatus } : f
+                )
+            );
+
+            try {
+                let resultData: Uint8Array;
+
+                if (ext === outputFormat) {
+                    // Same format: copy as-is
+                    const buffer = await batchFile.file.arrayBuffer();
+                    resultData = new Uint8Array(buffer);
+                    copied++;
+
+                    setBatchFiles((prev) =>
+                        prev.map((f) =>
+                            f.id === batchFile.id
+                                ? {
+                                      ...f,
+                                      status: 'copied' as BatchFileStatus,
+                                      storageKey,
+                                      resultSize: resultData.byteLength,
+                                  }
+                                : f
+                        )
+                    );
+                } else {
+                    // Convert the file
+                    const inputFormat = ext as InputFormat;
+                    const result = await converter.convertFile(batchFile.file, {
+                        inputFormat,
+                        outputFormat,
+                    });
+                    resultData = result.data;
+                    converted++;
+
+                    setBatchFiles((prev) =>
+                        prev.map((f) =>
+                            f.id === batchFile.id
+                                ? {
+                                      ...f,
+                                      status: 'done' as BatchFileStatus,
+                                      storageKey,
+                                      resultSize: resultData.byteLength,
+                                  }
+                                : f
+                        )
+                    );
+                }
+
+                // Store in IndexedDB
+                await storeConvertedFile(storageKey, resultData);
+            } catch (error) {
+                failed++;
+                setBatchFiles((prev) =>
+                    prev.map((f) =>
+                        f.id === batchFile.id
+                            ? {
+                                  ...f,
+                                  status: 'failed' as BatchFileStatus,
+                                  error: (error as Error).message,
+                              }
+                            : f
+                    )
+                );
+            }
+
+            setBatchProgress((prev) => ({
+                ...prev,
+                current,
+                converted,
+                copied,
+                failed,
+            }));
+        }
+
+        // Build ZIP files
+        // Need to get updated batchFiles with storageKeys
+        setBatchFiles((currentFiles) => {
+            const updatedFilesToZip = currentFiles
+                .filter((f) => f.storageKey && (f.status === 'done' || f.status === 'copied'))
+                .map((f) => ({
+                    outputName: f.outputName || f.file.name,
+                    storageKey: f.storageKey!,
+                    size: f.resultSize || 0,
+                }));
+
+            if (updatedFilesToZip.length > 0) {
+                buildZipFiles(updatedFilesToZip, batchFolderName).then((zips) => {
+                    setZipFiles(zips);
+                    setIsBatchConverting(false);
+                });
+            } else {
+                setIsBatchConverting(false);
+            }
+
+            return currentFiles;
+        });
+    }, [batchFiles, outputFormat, batchFolderName, getConverter]);
+
     const [visiblePages, setVisiblePages] = useState<Set<number>>(new Set());
     const visiblePagesRef = useRef<Set<number>>(new Set());
     const processingQueueRef = useRef<boolean>(false);
