@@ -139,9 +139,15 @@ export default function ConverterApp() {
     const [isBatchConverting, setIsBatchConverting] = useState(false);
     const [zipFiles, setZipFiles] = useState<ZipFile[]>([]);
 
+    // Support prompt state - show after N successful conversions
+    const [conversionCount, setConversionCount] = useState(0);
+    const [showSupportPrompt, setShowSupportPrompt] = useState(false);
+    const SUPPORT_PROMPT_THRESHOLD = 3; // Show after 3 conversions
+
     const converterRef = useRef<WorkerBrowserConverter | null>(null);
     const initializationPromiseRef = useRef<Promise<WorkerBrowserConverter> | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const folderInputRef = useRef<HTMLInputElement>(null);
     const lastProgressTimeRef = useRef<number>(Date.now());
     const lastProgressMessageRef = useRef<string>('');
 
@@ -185,6 +191,39 @@ export default function ConverterApp() {
     useEffect(() => {
         getConverter().catch(console.error);
     }, [getConverter]);
+
+    // Load conversion count from localStorage
+    useEffect(() => {
+        try {
+            const stored = localStorage.getItem('conversionCount');
+            if (stored) {
+                const count = parseInt(stored, 10);
+                setConversionCount(count);
+                setShowSupportPrompt(count >= SUPPORT_PROMPT_THRESHOLD);
+            }
+        } catch (e) {
+            // localStorage not available (SSR or privacy mode)
+        }
+    }, []);
+
+    // Track successful conversion - reads directly from localStorage to avoid stale closures
+    const trackConversion = useCallback(() => {
+        try {
+            // Read current count directly from localStorage to avoid stale state
+            const stored = localStorage.getItem('conversionCount');
+            const currentCount = stored ? parseInt(stored, 10) : 0;
+            const newCount = currentCount + 1;
+            
+            localStorage.setItem('conversionCount', String(newCount));
+            setConversionCount(newCount);
+            
+            if (newCount >= SUPPORT_PROMPT_THRESHOLD) {
+                setShowSupportPrompt(true);
+            }
+        } catch (e) {
+            // localStorage not available
+        }
+    }, []);
 
     // Handle file selection
     const handleFile = useCallback(async (file: File) => {
@@ -394,6 +433,8 @@ export default function ConverterApp() {
                 buildZipFiles(updatedFilesToZip, batchFolderName).then((zips) => {
                     setZipFiles(zips);
                     setIsBatchConverting(false);
+                    // Track successful batch conversion
+                    trackConversion();
                 });
             } else {
                 setIsBatchConverting(false);
@@ -401,7 +442,7 @@ export default function ConverterApp() {
 
             return currentFiles;
         });
-    }, [batchFiles, outputFormat, batchFolderName, getConverter]);
+    }, [batchFiles, outputFormat, batchFolderName, getConverter, trackConversion]);
 
     // Cancel batch mode
     const handleBatchCancel = useCallback(async () => {
@@ -587,12 +628,32 @@ export default function ConverterApp() {
 
             converter.download(result);
             setStatus({ type: 'success', message: `Conversion complete! Download started.` });
+            trackConversion();
         } catch (error) {
             setStatus({ type: 'error', message: `Error: ${(error as Error).message}` });
         } finally {
             setIsConverting(false);
         }
-    }, [selectedFile, outputFormat, getConverter]);
+    }, [selectedFile, outputFormat, getConverter, trackConversion]);
+
+    // Handle folder selection via input
+    const handleFolderSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        const fileArray = Array.from(files);
+        // Get folder name from the first file's path (webkitRelativePath contains folder/filename)
+        const firstPath = fileArray[0].webkitRelativePath || fileArray[0].name;
+        const folderName = firstPath.split('/')[0] || 'converted-files';
+
+        const supportedFiles = fileArray.filter((f) => isSupportedFormat(f.name));
+        if (supportedFiles.length > 0) {
+            initBatchMode(fileArray, folderName);
+        }
+
+        // Reset input so the same folder can be selected again
+        e.target.value = '';
+    }, [initBatchMode]);
 
     // Drag and drop handlers
     const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -716,23 +777,39 @@ export default function ConverterApp() {
 
                             <div
                                 className={`drop-zone ${isDragging ? 'active' : ''} ${selectedFile ? 'has-file' : ''}`}
-                                onClick={() => fileInputRef.current?.click()}
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
                                 onDrop={handleDrop}
-                                role="button"
-                                tabIndex={0}
-                                aria-label="Drop zone for file upload. Click or drag and drop files here."
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        e.preventDefault();
-                                        fileInputRef.current?.click();
-                                    }
-                                }}
+                                role="region"
+                                aria-label="Drop zone for file upload. Drag and drop files or folders here."
                             >
                                 <div className="drop-icon" aria-hidden="true">📄</div>
-                                <h3>Drop your document here</h3>
-                                <p>or click to browse files</p>
+                                <h3>Drop documents or folders here</h3>
+                                <p className="drop-hint">Drag & drop files, multiple files, or entire folders</p>
+                                <div className="upload-buttons">
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary upload-btn"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            fileInputRef.current?.click();
+                                        }}
+                                        aria-label="Browse for files"
+                                    >
+                                        <span aria-hidden="true">📄</span> Select Files
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary upload-btn"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            folderInputRef.current?.click();
+                                        }}
+                                        aria-label="Browse for folder"
+                                    >
+                                        <span aria-hidden="true">📁</span> Select Folder
+                                    </button>
+                                </div>
                             </div>
 
                             {selectedFile && (
@@ -749,12 +826,35 @@ export default function ConverterApp() {
                                 type="file"
                                 ref={fileInputRef}
                                 hidden
+                                multiple
                                 aria-label="File input for document upload"
                                 accept=".docx,.doc,.odt,.rtf,.txt,.html,.htm,.xlsx,.xls,.ods,.csv,.pptx,.ppt,.odp,.pdf,.png,.jpg,.jpeg,.svg"
                                 onChange={(e) => {
                                     const files = e.target.files;
-                                    if (files?.length) handleFile(files[0]);
+                                    if (!files?.length) return;
+                                    
+                                    if (files.length > 1) {
+                                        // Multiple files selected - enter batch mode
+                                        const fileArray = Array.from(files);
+                                        const supportedFiles = fileArray.filter((f) => isSupportedFormat(f.name));
+                                        if (supportedFiles.length > 0) {
+                                            initBatchMode(fileArray, 'converted-files');
+                                        }
+                                    } else {
+                                        // Single file - use existing behavior
+                                        handleFile(files[0]);
+                                    }
+                                    e.target.value = '';
                                 }}
+                            />
+                            <input
+                                type="file"
+                                ref={folderInputRef}
+                                hidden
+                                // @ts-expect-error webkitdirectory is not in the standard types
+                                webkitdirectory=""
+                                aria-label="Folder input for batch upload"
+                                onChange={handleFolderSelect}
                             />
 
                             {documentInfo && (
@@ -806,6 +906,17 @@ export default function ConverterApp() {
                                 <span aria-hidden="true">⚡</span> {isConverting ? 'Converting...' : 'Convert & Download'}
                             </button>
 
+                            {showSupportPrompt && (
+                                <a 
+                                    href="https://buymeacoffee.com/matbee" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="sidebar-support-link"
+                                >
+                                    ☕ Enjoying this tool? Buy me a coffee
+                                </a>
+                            )}
+
                             {isConverting && (
                                 <div className="progress-container show" role="progressbar" aria-valuenow={progress.percent} aria-valuemin={0} aria-valuemax={100} aria-label="Conversion progress">
                                     <div className="progress-bar">
@@ -821,7 +932,19 @@ export default function ConverterApp() {
                                     role="alert" 
                                     aria-live="assertive"
                                 >
-                                    <span aria-hidden="true">{status.type === 'success' ? '✓' : '✗'}</span> {status.message}
+                                    <div className="status-content">
+                                        <span aria-hidden="true">{status.type === 'success' ? '✓' : '✗'}</span> {status.message}
+                                    </div>
+                                    {status.type === 'success' && showSupportPrompt && (
+                                        <a 
+                                            href="https://buymeacoffee.com/matbee" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="success-support-link"
+                                        >
+                                            ☕ Enjoying this tool? Buy me a coffee
+                                        </a>
+                                    )}
                                 </div>
                             )}
                         </section>
@@ -933,6 +1056,7 @@ export default function ConverterApp() {
                     folderName={batchFolderName}
                     isConverting={isBatchConverting}
                     zipFiles={zipFiles}
+                    showSupportPrompt={showSupportPrompt}
                     onConvert={handleBatchConvert}
                     onCancel={handleBatchCancel}
                     onDownload={handleBatchDownload}

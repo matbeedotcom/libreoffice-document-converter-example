@@ -185,6 +185,31 @@ header h1 {
   font-size: 0.875rem;
 }
 
+.drop-hint {
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.upload-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.upload-btn {
+  width: auto !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
+  gap: 0.375rem !important;
+  white-space: nowrap;
+}
+
+.upload-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
 /* File Info */
 .file-info {
   display: flex;
@@ -331,9 +356,15 @@ select:focus {
   font-size: 0.875rem;
   font-weight: 500;
   display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.status-content {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
-  animation: fadeIn 0.3s ease-out;
 }
 
 .status.success {
@@ -346,6 +377,53 @@ select:focus {
   background: rgba(239, 68, 68, 0.1);
   color: var(--error);
   border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.success-support-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  background: rgba(16, 185, 129, 0.15);
+  color: #047857;
+  font-weight: 500;
+  font-size: 0.8rem;
+  border-radius: 1rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  animation: fadeIn 0.4s ease-out 0.3s both;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  margin-top: 0.25rem;
+}
+
+.success-support-link:hover {
+  background: rgba(16, 185, 129, 0.25);
+  text-decoration: none;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  .success-support-link {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+  
+  .success-support-link:hover {
+    background: rgba(16, 185, 129, 0.3);
+    border-color: rgba(16, 185, 129, 0.5);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Preview Section */
@@ -736,6 +814,52 @@ footer .support-link a:hover {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+}
+
+.batch-support-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--primary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.batch-support-link:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.35);
+  text-decoration: none;
+}
+
+.sidebar-support-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--primary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  width: 100%;
+}
+
+.sidebar-support-link:hover {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.25);
+  text-decoration: none;
 }
 
 /* Screen reader only - for accessibility */

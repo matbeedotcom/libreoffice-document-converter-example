@@ -14,6 +14,7 @@ interface BatchPanelProps {
   folderName: string;
   isConverting: boolean;
   zipFiles: ZipFile[];
+  showSupportPrompt: boolean;
   onConvert: () => void;
   onCancel: () => void;
   onDownload: (zipFile: ZipFile) => void;
@@ -66,6 +67,7 @@ export default function BatchPanel({
   folderName,
   isConverting,
   zipFiles,
+  showSupportPrompt,
   onConvert,
   onCancel,
   onDownload,
@@ -179,6 +181,16 @@ export default function BatchPanel({
                   </button>
                 ))}
               </div>
+              {showSupportPrompt && (
+                <a 
+                  href="https://buymeacoffee.com/matbee" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="batch-support-link"
+                >
+                  ☕ Enjoying this tool? Buy me a coffee
+                </a>
+              )}
               <button className="btn btn-secondary" onClick={onCancel}>
                 Done
               </button>
