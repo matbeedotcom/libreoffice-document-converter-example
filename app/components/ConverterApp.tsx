@@ -358,6 +358,27 @@ export default function ConverterApp() {
         });
     }, [batchFiles, outputFormat, batchFolderName, getConverter]);
 
+    // Cancel batch mode
+    const handleBatchCancel = useCallback(async () => {
+        await clearAllConvertedFiles();
+        setBatchFiles([]);
+        setBatchProgress({
+            current: 0,
+            total: 0,
+            converted: 0,
+            copied: 0,
+            failed: 0,
+        });
+        setZipFiles([]);
+        setIsBatchMode(false);
+        setIsBatchConverting(false);
+    }, []);
+
+    // Download a ZIP file
+    const handleBatchDownload = useCallback((zipFile: ZipFile) => {
+        downloadZipFile(zipFile);
+    }, []);
+
     const [visiblePages, setVisiblePages] = useState<Set<number>>(new Set());
     const visiblePagesRef = useRef<Set<number>>(new Set());
     const processingQueueRef = useRef<boolean>(false);
