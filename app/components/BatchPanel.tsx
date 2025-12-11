@@ -5,7 +5,7 @@
 import { useCallback } from 'react';
 import type { BatchFile, BatchProgress } from '../types/batch';
 import type { ZipFile } from '../utils/zipBuilder';
-import type { OutputFormat } from '@matbee/libreoffice-converter';
+import type { OutputFormat } from '@matbee/libreoffice-converter/types';
 
 interface BatchPanelProps {
   files: BatchFile[];

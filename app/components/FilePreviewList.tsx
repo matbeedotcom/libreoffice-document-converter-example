@@ -3,7 +3,7 @@
 'use client';
 
 import type { FileEntry, ConversionProgress } from '../types/batch';
-import type { OutputFormat } from '@matbee/libreoffice-converter';
+import type { OutputFormat } from '@matbee/libreoffice-converter/types';
 import FilePreviewRow from './FilePreviewRow';
 
 interface FilePreviewListProps {

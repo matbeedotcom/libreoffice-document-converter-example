@@ -5,7 +5,7 @@ import type {
     ConversionResult,
     OutputFormat,
     InputFormat,
-} from '@matbee/libreoffice-converter';
+} from '@matbee/libreoffice-converter/types';
 
 import { WorkerBrowserConverter, createWasmPaths } from '@matbee/libreoffice-converter/browser';
 import type { BatchFile, BatchProgress, BatchFileStatus } from '../types/batch';
