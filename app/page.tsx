@@ -1,11 +1,11 @@
-import ConverterApp from "./components/ConverterApp";
+import MainLandingPage from "./components/MainLandingPage";
 import VLMProvider from "./context/VLMContext";
 
 export default function Home() {
   return (
     <main>
       <VLMProvider>
-        <ConverterApp />
+        <MainLandingPage />
       </VLMProvider>
     </main>
   );

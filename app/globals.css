@@ -1,27 +1,55 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  /* Global theme colors */
   --primary: #3b82f6;
   --primary-hover: #2563eb;
   --secondary: #64748b;
   --accent: #8b5cf6;
   --success: #10b981;
+  --success-dark: #047857;
   --error: #ef4444;
+  --error-dark: #dc2626;
+  
+  /* Card/component colors - light mode */
   --card-bg: #ffffff;
-  --border: #e2e8f0;
-  --text-muted: #64748b;
+  --card-bg-alt: #f8fafc;
+  --card-border: #e2e8f0;
+  --card-text: #1e293b;
+  --card-text-heading: #0f172a;
+  --card-text-muted: #64748b;
+  --card-text-subtle: #94a3b8;
+  
+  /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  
+  /* Legacy variables for backwards compatibility */
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --border: #e2e8f0;
+  --text-muted: #64748b;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    /* Card/component colors - dark mode */
+    --card-bg: #1e293b;
+    --card-bg-alt: #0f172a;
+    --card-border: #334155;
+    --card-text: #e2e8f0;
+    --card-text-heading: #f1f5f9;
+    --card-text-muted: #94a3b8;
+    --card-text-subtle: #64748b;
+    
+    /* Status colors - dark mode (lighter for better visibility) */
+    --success-dark: #34d399;
+    --error-dark: #f87171;
+    
+    /* Legacy variables */
     --background: #0f172a;
     --foreground: #f8fafc;
-    --card-bg: #1e293b;
     --border: #334155;
     --text-muted: #94a3b8;
   }
@@ -101,13 +129,14 @@ header h1 {
 .card {
   background: var(--card-bg);
   border-radius: 1rem;
-  border: 1px solid var(--border);
+  border: 1px solid var(--card-border);
   box-shadow: var(--shadow);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   transition: transform 0.2s, box-shadow 0.2s;
+  color: var(--card-text);
 }
 
 .card-header {
@@ -128,33 +157,27 @@ header h1 {
   border-radius: 0.75rem;
 }
 
-.dark .card-icon {
-  background: linear-gradient(135deg, #1e3a8a, #172554);
-}
-
 .card-title {
   font-weight: 600;
   font-size: 1.125rem;
+  color: var(--card-text-heading);
 }
 
 .card-subtitle {
   font-size: 0.875rem;
-  color: var(--text-muted);
+  color: var(--card-text-muted);
 }
 
 /* Drop Zone */
 .drop-zone {
-  border: 2px dashed var(--border);
+  border: 2px dashed var(--card-border);
   border-radius: 0.75rem;
   padding: 2rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s;
-  background: rgba(255, 255, 255, 0.5);
-}
-
-.dark .drop-zone {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--card-bg-alt);
+  color: var(--card-text);
 }
 
 .drop-zone:hover, .drop-zone.active {
@@ -172,16 +195,18 @@ header h1 {
 .drop-icon {
   font-size: 2.5rem;
   margin-bottom: 1rem;
-  opacity: 0.5;
+  opacity: 0.6;
+  color: var(--card-text-subtle);
 }
 
 .drop-zone h3 {
   font-weight: 600;
   margin-bottom: 0.25rem;
+  color: var(--card-text-heading);
 }
 
 .drop-zone p {
-  color: var(--text-muted);
+  color: var(--card-text-muted);
   font-size: 0.875rem;
 }
 
@@ -216,9 +241,9 @@ header h1 {
   align-items: center;
   gap: 1rem;
   padding: 0.75rem;
-  background: var(--background);
+  background: var(--card-bg-alt);
   border-radius: 0.5rem;
-  border: 1px solid var(--border);
+  border: 1px solid var(--card-border);
   animation: slideDown 0.3s ease-out;
 }
 
@@ -236,19 +261,20 @@ header h1 {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--card-text);
 }
 
 .file-meta {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--card-text-muted);
 }
 
 .doc-info {
   font-size: 0.875rem;
-  color: var(--text-muted);
+  color: var(--card-text-muted);
   text-align: center;
   padding: 0.5rem;
-  background: var(--background);
+  background: var(--card-bg-alt);
   border-radius: 0.5rem;
 }
 
@@ -262,15 +288,16 @@ header h1 {
 .form-group label {
   font-weight: 500;
   font-size: 0.875rem;
+  color: var(--card-text-muted);
 }
 
 select {
   width: 100%;
   padding: 0.75rem;
   border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  background: var(--background);
-  color: var(--foreground);
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--card-text);
   font-size: 1rem;
   cursor: pointer;
   transition: border-color 0.2s;
@@ -436,7 +463,7 @@ select:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--card-border);
   padding-bottom: 1rem;
   margin-bottom: 1rem;
 }
@@ -453,11 +480,12 @@ select:focus {
 .stat-value {
   font-weight: 700;
   font-size: 1.25rem;
+  color: var(--card-text);
 }
 
 .stat-label {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--card-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -470,10 +498,10 @@ select:focus {
 }
 
 .page-card {
-  background: var(--background);
+  background: var(--card-bg-alt);
   border-radius: 0.75rem;
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--card-border);
   transition: all 0.2s;
 }
 
@@ -502,11 +530,12 @@ select:focus {
 
 .page-info {
   padding: 0.75rem;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--card-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.875rem;
+  color: var(--card-text);
 }
 
 .page-number {
@@ -517,8 +546,8 @@ select:focus {
   font-size: 0.75rem;
   padding: 0.125rem 0.375rem;
   border-radius: 999px;
-  background: var(--border);
-  color: var(--text-muted);
+  background: var(--card-border);
+  color: var(--card-text-muted);
 }
 
 .page-badge.loaded {
@@ -527,7 +556,7 @@ select:focus {
 }
 
 .skeleton {
-  background: linear-gradient(90deg, var(--background) 25%, var(--border) 50%, var(--background) 75%);
+  background: linear-gradient(90deg, var(--card-bg-alt) 25%, var(--card-border) 50%, var(--card-bg-alt) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -544,7 +573,7 @@ select:focus {
   align-items: center;
   justify-content: center;
   height: 400px;
-  color: var(--text-muted);
+  color: var(--card-text-muted);
   text-align: center;
 }
 
@@ -587,6 +616,30 @@ footer .support-link a:hover {
   text-decoration: none;
 }
 
+.global-footer {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  font-size: 0.875rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.global-footer p {
+  margin: 0;
+}
+
+.global-footer a {
+  color: #60a5fa;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.global-footer a:hover {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
@@ -621,7 +674,7 @@ footer .support-link a:hover {
 .batch-panel {
   background: var(--card-bg);
   border-radius: 1rem;
-  border: 1px solid var(--border);
+  border: 1px solid var(--card-border);
   box-shadow: var(--shadow-lg);
   width: 100%;
   max-width: 700px;
@@ -630,6 +683,7 @@ footer .support-link a:hover {
   flex-direction: column;
   overflow: hidden;
   animation: slideDown 0.3s ease-out;
+  color: var(--card-text);
 }
 
 .batch-panel-header {
@@ -637,18 +691,19 @@ footer .support-link a:hover {
   justify-content: space-between;
   align-items: flex-start;
   padding: 1.5rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--card-border);
 }
 
 .batch-panel-header h2 {
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
+  color: var(--card-text-heading);
 }
 
 .batch-folder-name {
   font-size: 0.875rem;
-  color: var(--text-muted);
+  color: var(--card-text-muted);
   margin-top: 0.25rem;
 }
 
@@ -656,7 +711,7 @@ footer .support-link a:hover {
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: var(--text-muted);
+  color: var(--card-text-muted);
   cursor: pointer;
   padding: 0;
   line-height: 1;
@@ -664,7 +719,7 @@ footer .support-link a:hover {
 }
 
 .batch-close-btn:hover:not(:disabled) {
-  color: var(--foreground);
+  color: var(--card-text);
 }
 
 .batch-close-btn:disabled {
@@ -676,8 +731,8 @@ footer .support-link a:hover {
   display: flex;
   justify-content: space-around;
   padding: 1rem 1.5rem;
-  background: var(--background);
-  border-bottom: 1px solid var(--border);
+  background: var(--card-bg-alt);
+  border-bottom: 1px solid var(--card-border);
 }
 
 .batch-stat {
@@ -690,23 +745,24 @@ footer .support-link a:hover {
 .batch-stat-value {
   font-size: 1.25rem;
   font-weight: 700;
+  color: var(--card-text);
 }
 
 .batch-stat-label {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--card-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .batch-progress {
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--card-border);
 }
 
 .batch-progress-bar {
   height: 0.5rem;
-  background: var(--border);
+  background: var(--card-border);
   border-radius: 999px;
   overflow: hidden;
   margin-bottom: 0.5rem;
@@ -720,7 +776,7 @@ footer .support-link a:hover {
 
 .batch-progress-text {
   font-size: 0.875rem;
-  color: var(--text-muted);
+  color: var(--card-text-muted);
   text-align: center;
   margin: 0;
 }
@@ -739,9 +795,9 @@ footer .support-link a:hover {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem;
-  background: var(--background);
+  background: var(--card-bg-alt);
   border-radius: 0.5rem;
-  border: 1px solid var(--border);
+  border: 1px solid var(--card-border);
 }
 
 .batch-file-info {
@@ -756,40 +812,41 @@ footer .support-link a:hover {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--card-text);
 }
 
 .batch-file-size {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--card-text-muted);
 }
 
 .batch-file-status {
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
   border-radius: 999px;
-  background: var(--border);
-  color: var(--text-muted);
+  background: var(--card-border);
+  color: var(--card-text-muted);
   white-space: nowrap;
 }
 
 .batch-file-status.status-success {
-  background: rgba(16, 185, 129, 0.1);
-  color: var(--success);
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success-dark);
 }
 
 .batch-file-status.status-error {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--error);
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--error-dark);
 }
 
 .batch-file-status.status-active {
-  background: rgba(59, 130, 246, 0.1);
-  color: var(--primary);
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--primary-hover);
 }
 
 .batch-actions {
   padding: 1.5rem;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--card-border);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;

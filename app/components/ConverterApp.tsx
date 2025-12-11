@@ -753,16 +753,6 @@ export default function ConverterApp() {
         <>
             <div className="bg-pattern" aria-hidden="true" />
             <div className="container" role="main">
-                <header role="banner">
-                    <h1>Free Office Document Converter</h1>
-                    <p className="tagline">
-                        100% private — your files never leave your browser. No uploads, no server, no data collection.
-                    </p>
-                    <p className="powered-by">
-                        Powered by <a href="https://github.com/matbeedotcom/libreoffice-document-converter" target="_blank" rel="noreferrer">@matbeedotcom/libreoffice-document-converter</a>
-                    </p>
-                </header>
-
                 <div className="main-grid">
                     {/* Upload Section */}
                     <aside className="sidebar" aria-label="Document upload and conversion controls">
@@ -1019,22 +1009,6 @@ export default function ConverterApp() {
                         </div >
                     </section >
                 </div >
-
-                <footer role="contentinfo">
-                    <p>
-                        Powered by <a href="https://www.libreoffice.org/" target="_blank" rel="noopener noreferrer">LibreOffice</a>{' '}
-                        compiled to WebAssembly •{' '}
-                        <a href="https://www.npmjs.com/package/@matbee/libreoffice-converter" target="_blank" rel="noopener noreferrer">
-                            NPM Package
-                        </a>
-                    </p>
-                    <p className="support-link">
-                        Love this tool?{' '}
-                        <a href="https://buymeacoffee.com/matbee" target="_blank" rel="noopener noreferrer">
-                            ☕ Buy me a coffee
-                        </a>
-                    </p>
-                </footer>
             </div >
 
             {/* <Sidebar

@@ -147,13 +147,6 @@ const jsonLd = {
       ],
       screenshot: `${siteUrl}/opengraph-image.png`,
       softwareVersion: "1.0.0",
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: "5",
-        ratingCount: "1",
-        bestRating: "5",
-        worstRating: "1",
-      },
     },
     {
       "@type": "Organization",
@@ -244,6 +237,36 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <footer className="global-footer">
+          <p>
+            Powered by{" "}
+            <a
+              href="https://www.libreoffice.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LibreOffice
+            </a>{" "}
+            compiled to WebAssembly •{" "}
+            <a
+              href="https://www.npmjs.com/package/@matbee/libreoffice-converter"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              NPM Package
+            </a>
+          </p>
+          <p className="support-link">
+            Love this tool?{" "}
+            <a
+              href="https://buymeacoffee.com/matbee"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ☕ Buy me a coffee
+            </a>
+          </p>
+        </footer>
       </body>
     </html>
   );

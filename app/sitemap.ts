@@ -4,6 +4,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = "https://convertmydocuments.com";
   const lastModified = new Date();
 
+  // Conversion landing pages
+  const conversionPages = [
+    "word-to-pdf",
+    "excel-to-pdf",
+    "powerpoint-to-pdf",
+    "pdf-to-word",
+    "pdf-to-excel",
+    "pdf-to-powerpoint",
+  ];
+
   return [
     {
       url: siteUrl,
@@ -11,14 +21,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
-    // Add more pages here as the site grows
-    // Example for future conversion-specific pages:
-    // {
-    //   url: `${siteUrl}/convert/word-to-pdf`,
-    //   lastModified,
-    //   changeFrequency: "monthly",
-    //   priority: 0.8,
-    // },
+    // Conversion-specific landing pages for SEO
+    ...conversionPages.map((page) => ({
+      url: `${siteUrl}/${page}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    })),
   ];
 }
 
