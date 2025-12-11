@@ -17,7 +17,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import JSZip from 'jszip';
 import { WorkerConverter } from '@matbee/libreoffice-converter/server'
-const converter = new WorkerConverter({ verbose: false });
+
+const converter = new WorkerConverter({
+  verbose: true,
+  onProgress: (progress) => {
+    console.log(`[Converter Progress] ${progress.phase} - ${progress.percent}% - ${progress.message}`);
+  },
+});
 
 // Force Node.js runtime (required for WASM with Emscripten)
 export const runtime = 'nodejs';
@@ -65,11 +71,17 @@ let converterPromise: Promise<any> | null = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getConverter(): Promise<any> {
   if (converterPromise) {
+    console.log('[Converter] Returning cached converter instance');
     return converterPromise;
   }
 
+  console.log('[Converter] Starting initialization...');
+  const startTime = Date.now();
+
   converterPromise = (async () => {
+    console.log('[Converter] Calling converter.initialize()...');
     await converter.initialize();
+    console.log(`[Converter] Initialized in ${Date.now() - startTime}ms`);
     return converter;
   })();
 
@@ -77,8 +89,11 @@ async function getConverter(): Promise<any> {
 }
 
 export async function POST(request: NextRequest) {
+  console.log('[API] POST /api/convert - Request received');
   try {
+    console.log('[API] Parsing formData...');
     const formData = await request.formData();
+    console.log('[API] FormData parsed');
     const outputFormat = formData.get('outputFormat') as string;
     const files = formData.getAll('files') as File[];
 
@@ -112,7 +127,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Initialize converter
+    console.log(`[API] ${validFiles.length} valid files, initializing converter...`);
     const converter = await getConverter();
+    console.log('[API] Converter ready, starting conversions...');
 
     // Process files
     const results: ConversionResult[] = [];
@@ -141,12 +158,15 @@ export async function POST(request: NextRequest) {
 
         for (let attempt = 0; attempt <= maxRetries && !converted; attempt++) {
           try {
+            console.log(`[API] Converting ${file.name} (attempt ${attempt + 1})...`);
             const buffer = await file.arrayBuffer();
+            const conversionStart = Date.now();
             const conversionResult = await converter.convert(
               new Uint8Array(buffer),
               { outputFormat: outputFormat as any },
               file.name
             );
+            console.log(`[API] Converted ${file.name} in ${Date.now() - conversionStart}ms`);
 
             result = {
               filename: outputName,
