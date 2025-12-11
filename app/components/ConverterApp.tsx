@@ -608,6 +608,7 @@ export default function ConverterApp() {
     useEffect(() => {
         return () => {
             converterRef.current?.destroy();
+            clearAllConvertedFiles().catch(console.error);
         };
     }, []);
 
