@@ -25,90 +25,93 @@ interface ConversionLandingPageProps {
 export default function ConversionLandingPage({ conversion }: ConversionLandingPageProps) {
   return (
     <div className="conversion-landing">
+      {/* Skip to main content link */}
+      <a href="#converter" className="skip-link">Skip to converter</a>
+      
       {/* Hero Section */}
-      <header className="landing-hero">
+      <header className="landing-hero" role="banner">
         <div className="hero-content">
-          <div className="conversion-badge">
-            <span className="badge-icon">{conversion.icon}</span>
-            <span className="badge-arrow">→</span>
+          <div className="conversion-badge" aria-label={`Convert ${conversion.fromLabel} to ${conversion.toLabel}`}>
+            <span className="badge-icon" aria-hidden="true">{conversion.icon}</span>
+            <span className="badge-arrow" aria-hidden="true">→</span>
             <span className="badge-format">{conversion.toLabel}</span>
           </div>
           <h1>
             Free {conversion.fromLabel} to {conversion.toLabel} Converter
           </h1>
           <p className="hero-description">{conversion.description}</p>
-          <div className="hero-features">
-            <div className="feature-pill">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <ul className="hero-features" role="list" aria-label="Key benefits">
+            <li className="feature-pill">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
               100% Private
-            </div>
-            <div className="feature-pill">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            </li>
+            <li className="feature-pill">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <circle cx="12" cy="12" r="10"/>
                 <path d="M12 6v6l4 2"/>
               </svg>
               Instant Conversion
-            </div>
-            <div className="feature-pill">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            </li>
+            <li className="feature-pill">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="17 8 12 3 7 8"/>
                 <line x1="12" y1="3" x2="12" y2="15"/>
               </svg>
               No Upload Required
-            </div>
-          </div>
+            </li>
+          </ul>
         </div>
       </header>
 
       {/* Converter Section */}
-      <section className="converter-section" id="converter">
+      <section className="converter-section" id="converter" aria-label={`${conversion.fromLabel} to ${conversion.toLabel} converter tool`}>
         <ConverterApp defaultOutputFormat={conversion.to} />
       </section>
 
       {/* Features Section */}
-      <section className="features-section">
+      <section className="features-section" aria-labelledby="features-heading">
         <div className="section-container">
-          <h2>Why Use Our {conversion.fromLabel} to {conversion.toLabel} Converter?</h2>
-          <div className="features-grid">
+          <h2 id="features-heading">Why Use Our {conversion.fromLabel} to {conversion.toLabel} Converter?</h2>
+          <ol className="features-grid" role="list" aria-label="Converter features">
             {conversion.features.map((feature, index) => (
-              <div key={index} className="feature-card">
-                <div className="feature-number">{index + 1}</div>
+              <li key={index} className="feature-card" role="listitem">
+                <div className="feature-number" aria-hidden="true">{index + 1}</div>
                 <p>{feature}</p>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
       {/* Use Cases Section */}
-      <section className="use-cases-section">
+      <section className="use-cases-section" aria-labelledby="usecases-heading">
         <div className="section-container">
-          <h2>Common Use Cases</h2>
-          <div className="use-cases-grid">
+          <h2 id="usecases-heading">Common Use Cases</h2>
+          <ul className="use-cases-grid" role="list" aria-label="Use cases">
             {conversion.useCases.map((useCase, index) => (
-              <div key={index} className="use-case-card">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <li key={index} className="use-case-card" role="listitem">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                   <polyline points="22 4 12 14.01 9 11.01"/>
                 </svg>
                 <span>{useCase}</span>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section className="faq-section">
+      <section className="faq-section" aria-labelledby="faq-heading">
         <div className="section-container">
-          <h2>Frequently Asked Questions</h2>
-          <div className="faq-grid">
+          <h2 id="faq-heading">Frequently Asked Questions</h2>
+          <div className="faq-grid" role="list" aria-label="Frequently asked questions">
             {conversion.faq.map((item, index) => (
-              <details key={index} className="faq-item">
-                <summary>{item.question}</summary>
+              <details key={index} className="faq-item" role="listitem">
+                <summary aria-expanded="false">{item.question}</summary>
                 <p>{item.answer}</p>
               </details>
             ))}
@@ -117,10 +120,10 @@ export default function ConversionLandingPage({ conversion }: ConversionLandingP
       </section>
 
       {/* Other Conversions */}
-      <section className="other-conversions-section">
+      <section className="other-conversions-section" aria-labelledby="other-heading">
         <div className="section-container">
-          <h2>Other Popular Conversions</h2>
-          <div className="conversions-links">
+          <h2 id="other-heading">Other Popular Conversions</h2>
+          <nav className="conversions-links" role="navigation" aria-label="Other conversion types">
             {[
               { href: "/word-to-pdf", label: "Word to PDF", from: "docx", to: "pdf" },
               { href: "/excel-to-pdf", label: "Excel to PDF", from: "xlsx", to: "pdf" },
@@ -131,18 +134,18 @@ export default function ConversionLandingPage({ conversion }: ConversionLandingP
             ]
               .filter((link) => !(link.from === conversion.from && link.to === conversion.to))
               .map((link) => (
-                <Link key={link.href} href={link.href}>{link.label}</Link>
+                <Link key={link.href} href={link.href} aria-label={`${link.label} converter`}>{link.label}</Link>
               ))}
-          </div>
+          </nav>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="cta-section">
+      <section className="cta-section" aria-labelledby="cta-heading">
         <div className="section-container">
-          <h2>Ready to Convert Your Files?</h2>
+          <h2 id="cta-heading">Ready to Convert Your Files?</h2>
           <p>No sign-up required. Your files stay on your device.</p>
-          <a href="#converter" className="cta-button">
+          <a href="#converter" className="cta-button" role="button">
             Start Converting Now
           </a>
         </div>
@@ -218,6 +221,9 @@ export default function ConversionLandingPage({ conversion }: ConversionLandingP
           flex-wrap: wrap;
           justify-content: center;
           gap: 1rem;
+          list-style: none;
+          padding: 0;
+          margin: 0;
         }
 
         .feature-pill {
@@ -230,6 +236,7 @@ export default function ConversionLandingPage({ conversion }: ConversionLandingP
           border-radius: 100px;
           color: #e2e8f0;
           font-size: 0.9rem;
+          list-style: none;
         }
 
         .feature-pill svg {
@@ -268,6 +275,9 @@ export default function ConversionLandingPage({ conversion }: ConversionLandingP
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
           gap: 1.5rem;
+          list-style: none;
+          padding: 0;
+          margin: 0;
         }
 
         .feature-card {
@@ -278,6 +288,7 @@ export default function ConversionLandingPage({ conversion }: ConversionLandingP
           display: flex;
           gap: 1rem;
           align-items: flex-start;
+          list-style: none;
         }
 
         .feature-number {
@@ -303,6 +314,9 @@ export default function ConversionLandingPage({ conversion }: ConversionLandingP
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
           gap: 1rem;
+          list-style: none;
+          padding: 0;
+          margin: 0;
         }
 
         .use-case-card {
@@ -314,6 +328,7 @@ export default function ConversionLandingPage({ conversion }: ConversionLandingP
           border: 1px solid rgba(16, 185, 129, 0.2);
           border-radius: 8px;
           color: #a7f3d0;
+          list-style: none;
         }
 
         .use-case-card svg {
@@ -327,6 +342,8 @@ export default function ConversionLandingPage({ conversion }: ConversionLandingP
           gap: 1rem;
           max-width: 800px;
           margin: 0 auto;
+          list-style: none;
+          padding: 0;
         }
 
         .faq-item {
@@ -334,6 +351,7 @@ export default function ConversionLandingPage({ conversion }: ConversionLandingP
           border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 12px;
           overflow: hidden;
+          list-style: none;
         }
 
         .faq-item summary {
@@ -373,6 +391,9 @@ export default function ConversionLandingPage({ conversion }: ConversionLandingP
           flex-wrap: wrap;
           justify-content: center;
           gap: 1rem;
+          list-style: none;
+          padding: 0;
+          margin: 0;
         }
 
         .conversions-links a {

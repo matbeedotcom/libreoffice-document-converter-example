@@ -274,13 +274,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        <footer className="global-footer">
+        <footer className="global-footer" role="contentinfo" aria-label="Site footer">
           <p>
             Powered by{" "}
             <a
               href="https://www.libreoffice.org/"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="LibreOffice (opens in new tab)"
             >
               LibreOffice
             </a>{" "}
@@ -289,6 +290,7 @@ export default function RootLayout({
               href="https://www.npmjs.com/package/@matbee/libreoffice-converter"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="NPM Package (opens in new tab)"
             >
               NPM Package
             </a>
@@ -299,8 +301,9 @@ export default function RootLayout({
               href="https://buymeacoffee.com/matbee"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Support this tool - Buy me a coffee (opens in new tab)"
             >
-              ☕ Buy me a coffee
+              <span aria-hidden="true">☕</span> Buy me a coffee
             </a>
           </p>
         </footer>

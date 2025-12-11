@@ -95,11 +95,14 @@ const supportedFormats = [
 export default function MainLandingPage() {
   return (
     <div className="main-landing">
+      {/* Skip to main content link */}
+      <a href="#converter" className="skip-link">Skip to converter</a>
+      
       {/* Hero Section */}
-      <header className="landing-hero">
+      <header className="landing-hero" role="banner">
         <div className="hero-content">
-          <div className="hero-badge">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className="hero-badge" role="status" aria-label="Privacy guarantee">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
             <span>100% Private — Files Never Leave Your Browser</span>
@@ -109,78 +112,83 @@ export default function MainLandingPage() {
             Convert Word, Excel, PowerPoint, PDF and more — completely free, with no uploads. 
             Powered by LibreOffice WebAssembly technology running entirely in your browser.
           </p>
-          <div className="hero-features">
-            <div className="feature-pill">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <ul className="hero-features" role="list" aria-label="Key benefits">
+            <li className="feature-pill">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                 <polyline points="22 4 12 14.01 9 11.01"/>
               </svg>
               No Sign-up
-            </div>
-            <div className="feature-pill">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            </li>
+            <li className="feature-pill">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                 <polyline points="22 4 12 14.01 9 11.01"/>
               </svg>
               No Limits
-            </div>
-            <div className="feature-pill">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            </li>
+            <li className="feature-pill">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                 <polyline points="22 4 12 14.01 9 11.01"/>
               </svg>
               No Ads
-            </div>
-          </div>
+            </li>
+          </ul>
         </div>
       </header>
 
       {/* Converter Section */}
-      <section className="converter-section" id="converter">
+      <section className="converter-section" id="converter" aria-label="Document converter tool">
         <ConverterApp />
       </section>
 
       {/* Popular Conversions */}
-      <section className="popular-section">
+      <section className="popular-section" aria-labelledby="popular-heading">
         <div className="section-container">
-          <h2>Popular Conversions</h2>
-          <div className="conversions-grid">
+          <h2 id="popular-heading">Popular Conversions</h2>
+          <nav className="conversions-grid" role="navigation" aria-label="Popular conversion types">
             {popularConversions.map((conv) => (
-              <Link key={conv.href} href={conv.href} className="conversion-card">
-                <span className="conversion-icon">{conv.icon}</span>
+              <Link 
+                key={conv.href} 
+                href={conv.href} 
+                className="conversion-card"
+                aria-label={`${conv.label} converter`}
+              >
+                <span className="conversion-icon" aria-hidden="true">{conv.icon}</span>
                 <span className="conversion-label">{conv.label}</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
               </Link>
             ))}
-          </div>
+          </nav>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="features-section">
+      <section className="features-section" aria-labelledby="features-heading">
         <div className="section-container">
-          <h2>Why Choose ConvertMyDocuments?</h2>
-          <div className="features-grid">
+          <h2 id="features-heading">Why Choose ConvertMyDocuments?</h2>
+          <div className="features-grid" role="list" aria-label="Product features">
             {features.map((feature, index) => (
-              <div key={index} className="feature-card">
-                <div className="feature-icon">{feature.icon}</div>
+              <article key={index} className="feature-card" role="listitem">
+                <div className="feature-icon" aria-hidden="true">{feature.icon}</div>
                 <h3>{feature.title}</h3>
                 <p>{feature.description}</p>
-              </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
       {/* Supported Formats */}
-      <section className="formats-section">
+      <section className="formats-section" aria-labelledby="formats-heading">
         <div className="section-container">
-          <h2>Supported File Formats</h2>
-          <div className="formats-grid">
+          <h2 id="formats-heading">Supported File Formats</h2>
+          <div className="formats-grid" role="list" aria-label="Supported file formats">
             {supportedFormats.map((format, index) => (
-              <div key={index} className="format-card">
+              <div key={index} className="format-card" role="listitem">
                 <h3>{format.name}</h3>
                 <p>{format.formats}</p>
               </div>
@@ -190,40 +198,40 @@ export default function MainLandingPage() {
       </section>
 
       {/* How It Works */}
-      <section className="how-it-works-section">
+      <section className="how-it-works-section" aria-labelledby="howto-heading">
         <div className="section-container">
-          <h2>How It Works</h2>
-          <div className="steps-grid">
-            <div className="step-card">
-              <div className="step-number">1</div>
+          <h2 id="howto-heading">How It Works</h2>
+          <ol className="steps-grid" role="list" aria-label="Conversion steps">
+            <li className="step-card" role="listitem">
+              <div className="step-number" aria-hidden="true">1</div>
               <h3>Upload</h3>
               <p>Select your file or drag & drop. Supports single files or entire folders for batch conversion.</p>
-            </div>
-            <div className="step-card">
-              <div className="step-number">2</div>
+            </li>
+            <li className="step-card" role="listitem">
+              <div className="step-number" aria-hidden="true">2</div>
               <h3>Choose Format</h3>
               <p>Select your desired output format from PDF, Word, Excel, PowerPoint, and more.</p>
-            </div>
-            <div className="step-card">
-              <div className="step-number">3</div>
+            </li>
+            <li className="step-card" role="listitem">
+              <div className="step-number" aria-hidden="true">3</div>
               <h3>Convert</h3>
               <p>Click convert — your file is processed instantly in your browser using WebAssembly.</p>
-            </div>
-            <div className="step-card">
-              <div className="step-number">4</div>
+            </li>
+            <li className="step-card" role="listitem">
+              <div className="step-number" aria-hidden="true">4</div>
               <h3>Download</h3>
               <p>Download your converted file. For batch conversions, get a convenient ZIP archive.</p>
-            </div>
-          </div>
+            </li>
+          </ol>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="cta-section">
+      <section className="cta-section" aria-labelledby="cta-heading">
         <div className="section-container">
-          <h2>Ready to Convert Your Documents?</h2>
+          <h2 id="cta-heading">Ready to Convert Your Documents?</h2>
           <p>No sign-up required. No file limits. Your files stay private.</p>
-          <a href="#converter" className="cta-button">
+          <a href="#converter" className="cta-button" role="button">
             Start Converting Now
           </a>
         </div>
@@ -297,6 +305,9 @@ export default function MainLandingPage() {
           flex-wrap: wrap;
           justify-content: center;
           gap: 1rem;
+          list-style: none;
+          padding: 0;
+          margin: 0;
         }
 
         .feature-pill {
@@ -309,6 +320,7 @@ export default function MainLandingPage() {
           border-radius: 100px;
           color: #e2e8f0;
           font-size: 0.9rem;
+          list-style: none;
         }
 
         .feature-pill svg {
@@ -344,6 +356,9 @@ export default function MainLandingPage() {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
           gap: 1rem;
+          list-style: none;
+          padding: 0;
+          margin: 0;
         }
 
         .conversion-card {
@@ -392,6 +407,9 @@ export default function MainLandingPage() {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
           gap: 1.5rem;
+          list-style: none;
+          padding: 0;
+          margin: 0;
         }
 
         .feature-card {
@@ -399,6 +417,7 @@ export default function MainLandingPage() {
           background: rgba(255, 255, 255, 0.03);
           border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 12px;
+          list-style: none;
         }
 
         .feature-icon {
@@ -431,6 +450,9 @@ export default function MainLandingPage() {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
           gap: 1rem;
+          list-style: none;
+          padding: 0;
+          margin: 0;
         }
 
         .format-card {
@@ -439,6 +461,7 @@ export default function MainLandingPage() {
           border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 12px;
           text-align: center;
+          list-style: none;
         }
 
         .format-card h3 {
@@ -458,6 +481,9 @@ export default function MainLandingPage() {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
           gap: 1.5rem;
+          list-style: none;
+          padding: 0;
+          margin: 0;
         }
 
         .step-card {
@@ -466,6 +492,7 @@ export default function MainLandingPage() {
           border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 12px;
           text-align: center;
+          list-style: none;
         }
 
         .step-number {
