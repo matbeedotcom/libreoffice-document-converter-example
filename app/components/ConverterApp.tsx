@@ -416,14 +416,49 @@ export default function ConverterApp() {
         setIsDragging(false);
     }, []);
 
-    const handleDrop = useCallback((e: React.DragEvent) => {
+    const handleDrop = useCallback(async (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(false);
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            handleFile(files[0]);
+
+        const items = e.dataTransfer.items;
+        const collectedFiles: File[] = [];
+        let folderName = 'converted-files';
+
+        // Check for directories or multiple files
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            const entry = item.webkitGetAsEntry?.();
+
+            if (entry?.isDirectory) {
+                folderName = entry.name;
+                const dirFiles = await readDirectoryEntries(
+                    entry as FileSystemDirectoryEntry
+                );
+                collectedFiles.push(...dirFiles);
+            } else if (entry?.isFile) {
+                const file = e.dataTransfer.files[i];
+                if (file) collectedFiles.push(file);
+            }
         }
-    }, [handleFile]);
+
+        // If multiple files or folder, enter batch mode
+        if (collectedFiles.length > 1) {
+            const supportedFiles = collectedFiles.filter((f) =>
+                isSupportedFormat(f.name)
+            );
+            if (supportedFiles.length > 0) {
+                initBatchMode(collectedFiles, folderName);
+                return;
+            }
+        }
+
+        // Single file: use existing behavior
+        if (collectedFiles.length === 1) {
+            handleFile(collectedFiles[0]);
+        } else if (e.dataTransfer.files.length > 0) {
+            handleFile(e.dataTransfer.files[0]);
+        }
+    }, [handleFile, initBatchMode]);
 
     // Cleanup on unmount
     useEffect(() => {
