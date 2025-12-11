@@ -6,11 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "copy-assets": "mkdir -p public/dist public/wasm && cp node_modules/@matbee/libreoffice-converter/dist/browser.worker.global.js* public/dist/ && cp -r node_modules/@matbee/libreoffice-converter/wasm/* public/wasm/ && gzip -9 -f public/wasm/soffice.wasm && mv public/wasm/soffice.wasm.gz public/wasm/soffice.wasm && gzip -9 -f public/wasm/soffice.data && mv public/wasm/soffice.data.gz public/wasm/soffice.data"
   },
   "dependencies": {
     "@ai-sdk/react": "^2.0.106",
-    "@libreoffice-wasm/converter": "link:/home/acidhax/dev/personal/node-libreoffice-v2",
+    "@built-in-ai/transformers-js": "^0.3.3",
+    "@huggingface/transformers": "^3.8.1",
+    "@matbee/libreoffice-converter": "^1.4.0",
     "ai": "^5.0.106",
     "next": "16.0.7",
     "react": "19.2.0",
@@ -18,6 +21,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -26,5 +30,10 @@
     "eslint-config-next": "16.0.7",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "overrides": {
+      "@huggingface/transformers": "3.8.1"
+    }
   }
 }

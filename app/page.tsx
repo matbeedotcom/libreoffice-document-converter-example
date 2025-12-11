@@ -1,9 +1,12 @@
 import ConverterApp from "./components/ConverterApp";
+import VLMProvider from "./context/VLMContext";
 
 export default function Home() {
   return (
     <main>
-      <ConverterApp />
+      <VLMProvider>
+        <ConverterApp />
+      </VLMProvider>
     </main>
   );
 }

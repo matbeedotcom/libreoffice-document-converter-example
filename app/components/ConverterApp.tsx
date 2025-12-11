@@ -5,9 +5,9 @@ import type {
     ConversionResult,
     OutputFormat,
     InputFormat,
-} from '@libreoffice-wasm/converter';
+} from '@matbee/libreoffice-converter';
 
-import { WorkerBrowserConverter } from '@libreoffice-wasm/converter/browser';
+import { WorkerBrowserConverter, createWasmPaths } from '@matbee/libreoffice-converter/browser';
 
 // Output format options
 const OUTPUT_FORMATS: { value: OutputFormat; label: string; group: string }[] = [
@@ -46,6 +46,10 @@ function formatBytes(bytes: number): string {
     return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
 }
 
+import dynamic from 'next/dynamic';
+
+const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false });
+
 export default function ConverterApp() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [fileBuffer, setFileBuffer] = useState<ArrayBuffer | null>(null);
@@ -58,6 +62,7 @@ export default function ConverterApp() {
     const [pagePreviews, setPagePreviews] = useState<PagePreview[]>([]);
     const [loadedPages, setLoadedPages] = useState<Set<number>>(new Set());
     const [isDragging, setIsDragging] = useState(false);
+    const [selectedPageIndex, setSelectedPageIndex] = useState<number | null>(null);
 
     const converterRef = useRef<WorkerBrowserConverter | null>(null);
     const initializationPromiseRef = useRef<Promise<WorkerBrowserConverter> | null>(null);
@@ -75,11 +80,11 @@ export default function ConverterApp() {
 
         initializationPromiseRef.current = (async () => {
             try {
-                const { WorkerBrowserConverter } = await import('@libreoffice-wasm/converter/browser');
+                const { WorkerBrowserConverter, createWasmPaths } = await import('@matbee/libreoffice-converter/browser');
 
                 const converter = new WorkerBrowserConverter({
-                    wasmPath: '/wasm',
-                    workerPath: '/dist/browser-worker.global.js',
+                    ...createWasmPaths('/wasm/'),
+                    browserWorkerJs: '/dist/browser.worker.global.js',
                     verbose: false,
                     onProgress: (p) => setProgress({ percent: p.percent, message: p.message }),
                 });
@@ -320,14 +325,44 @@ export default function ConverterApp() {
         };
     }, []);
 
+    // Load full resolution page for AI analysis
+    const loadFullPage = useCallback(async (pageIndex: number) => {
+        if (!selectedFile || !fileBuffer) return null;
+
+        try {
+            const converter = await getConverter();
+            const ext = (selectedFile.name.split('.').pop()?.toLowerCase() || 'docx') as InputFormat;
+
+            // Request a larger width for better AI analysis (e.g., 1600px)
+            const preview = await converter.renderSinglePage(
+                new Uint8Array(fileBuffer).slice(),
+                { inputFormat: ext },
+                pageIndex,
+                1600
+            );
+
+            return {
+                data: preview.data,
+                width: preview.width,
+                height: preview.height
+            };
+        } catch (error) {
+            console.error(`Failed to load full page ${pageIndex}:`, error);
+            return null;
+        }
+    }, [selectedFile, fileBuffer, getConverter]);
+
     return (
         <>
             <div className="bg-pattern" />
             <div className="container">
                 <header>
-                    <h1>React Document Converter</h1>
+                    <h1>Free Office Document Converter</h1>
                     <p className="tagline">
-                        Powered by @libreoffice-wasm/converter
+                        100% private — your files never leave your browser. No uploads, no server, no data collection.
+                    </p>
+                    <p className="powered-by">
+                        Powered by @matbee/libreoffice-converter
                     </p>
                 </header>
 
@@ -489,6 +524,11 @@ export default function ConverterApp() {
                                                 preview={preview}
                                                 isLoading={isLoading}
                                                 onVisibilityChange={handleVisibilityChange}
+                                                onClick={() => {
+                                                    if (preview) {
+                                                        setSelectedPageIndex(i);
+                                                    }
+                                                }}
                                             />
                                         );
                                     })}
@@ -503,12 +543,23 @@ export default function ConverterApp() {
                     <p>
                         Powered by <a href="https://www.libreoffice.org/" target="_blank" rel="noreferrer">LibreOffice</a>{' '}
                         compiled to WebAssembly •{' '}
-                        <a href="https://www.npmjs.com/package/@libreoffice-wasm/converter" target="_blank" rel="noreferrer">
+                        <a href="https://www.npmjs.com/package/@matbee/libreoffice-converter" target="_blank" rel="noreferrer">
                             NPM Package
                         </a>
                     </p>
                 </footer>
             </div >
+
+            {/* <Sidebar
+                isOpen={selectedPageIndex !== null}
+                onClose={() => setSelectedPageIndex(null)}
+                previewData={selectedPageIndex !== null ? pagePreviews.find(p => p.page === selectedPageIndex)?.data || null : null}
+                width={selectedPageIndex !== null ? pagePreviews.find(p => p.page === selectedPageIndex)?.width || 0 : 0}
+                height={selectedPageIndex !== null ? pagePreviews.find(p => p.page === selectedPageIndex)?.height || 0 : 0}
+                documentType={documentInfo?.documentTypeName || ''}
+                pageIndex={selectedPageIndex || 0}
+                onLoadFullImage={loadFullPage}
+            /> */}
         </>
     );
 }
@@ -518,12 +569,14 @@ function LazyPagePreview({
     pageIndex,
     preview,
     isLoading,
-    onVisibilityChange
+    onVisibilityChange,
+    onClick
 }: {
     pageIndex: number;
     preview: PagePreview | undefined;
     isLoading: boolean;
     onVisibilityChange: (index: number, isVisible: boolean) => void;
+    onClick: () => void;
 }) {
     const elementRef = useRef<HTMLDivElement>(null);
 
@@ -551,7 +604,8 @@ function LazyPagePreview({
         <div
             ref={elementRef}
             className="page-card"
-            style={{ cursor: preview ? 'default' : 'default' }}
+            style={{ cursor: preview ? 'pointer' : 'default' }}
+            onClick={onClick}
         >
             <div className={`page-preview ${!preview && !isLoading ? 'skeleton' : ''}`}>
                 {preview ? (
