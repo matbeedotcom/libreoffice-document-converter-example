@@ -846,6 +846,20 @@ export default function ConverterApp() {
                 pageIndex={selectedPageIndex || 0}
                 onLoadFullImage={loadFullPage}
             /> */}
+
+            {isBatchMode && (
+                <BatchPanel
+                    files={batchFiles}
+                    progress={batchProgress}
+                    outputFormat={outputFormat}
+                    folderName={batchFolderName}
+                    isConverting={isBatchConverting}
+                    zipFiles={zipFiles}
+                    onConvert={handleBatchConvert}
+                    onCancel={handleBatchCancel}
+                    onDownload={handleBatchDownload}
+                />
+            )}
         </>
     );
 }
