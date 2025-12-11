@@ -690,9 +690,9 @@ export default function ConverterApp() {
 
     return (
         <>
-            <div className="bg-pattern" />
-            <div className="container">
-                <header>
+            <div className="bg-pattern" aria-hidden="true" />
+            <div className="container" role="main">
+                <header role="banner">
                     <h1>Free Office Document Converter</h1>
                     <p className="tagline">
                         100% private — your files never leave your browser. No uploads, no server, no data collection.
@@ -703,14 +703,14 @@ export default function ConverterApp() {
                 </header>
 
                 <div className="main-grid">
-                    {/* Sidebar */}
-                    <aside className="sidebar">
-                        <div className="card">
+                    {/* Upload Section */}
+                    <aside className="sidebar" aria-label="Document upload and conversion controls">
+                        <section className="card" aria-labelledby="upload-heading">
                             <div className="card-header">
-                                <div className="card-icon">📁</div>
+                                <div className="card-icon" aria-hidden="true">📁</div>
                                 <div>
-                                    <div className="card-title">Upload Document</div>
-                                    <div className="card-subtitle">Supports Office, PDF, and more</div>
+                                    <h2 id="upload-heading" className="card-title">Upload Document</h2>
+                                    <p className="card-subtitle">Supports Office, PDF, and more</p>
                                 </div>
                             </div>
 
@@ -720,15 +720,24 @@ export default function ConverterApp() {
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
                                 onDrop={handleDrop}
+                                role="button"
+                                tabIndex={0}
+                                aria-label="Drop zone for file upload. Click or drag and drop files here."
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        fileInputRef.current?.click();
+                                    }
+                                }}
                             >
-                                <div className="drop-icon">📄</div>
+                                <div className="drop-icon" aria-hidden="true">📄</div>
                                 <h3>Drop your document here</h3>
                                 <p>or click to browse files</p>
                             </div>
 
                             {selectedFile && (
-                                <div className="file-info show">
-                                    <span className="file-icon">📎</span>
+                                <div className="file-info show" aria-live="polite">
+                                    <span className="file-icon" aria-hidden="true">📎</span>
                                     <div className="file-details">
                                         <div className="file-name">{selectedFile.name}</div>
                                         <div className="file-meta">{formatBytes(selectedFile.size)}</div>
@@ -740,6 +749,8 @@ export default function ConverterApp() {
                                 type="file"
                                 ref={fileInputRef}
                                 hidden
+                                aria-label="File input for document upload"
+                                accept=".docx,.doc,.odt,.rtf,.txt,.html,.htm,.xlsx,.xls,.ods,.csv,.pptx,.ppt,.odp,.pdf,.png,.jpg,.jpeg,.svg"
                                 onChange={(e) => {
                                     const files = e.target.files;
                                     if (files?.length) handleFile(files[0]);
@@ -747,8 +758,8 @@ export default function ConverterApp() {
                             />
 
                             {documentInfo && (
-                                <div className="doc-info show">
-                                    📄 {documentInfo.documentTypeName} • {documentInfo.pageCount} page
+                                <div className="doc-info show" aria-live="polite" role="status">
+                                    <span aria-hidden="true">📄</span> {documentInfo.documentTypeName} • {documentInfo.pageCount} page
                                     {documentInfo.pageCount !== 1 ? 's' : ''}
                                 </div>
                             )}
@@ -760,6 +771,7 @@ export default function ConverterApp() {
                                     value={outputFormat}
                                     onChange={(e) => setOutputFormat(e.target.value as OutputFormat)}
                                     disabled={isConverting}
+                                    aria-describedby="format-description"
                                 >
                                     {['Documents', 'Spreadsheets', 'Presentations', 'Images'].map((group) => (
                                         <optgroup key={group} label={group}>
@@ -779,41 +791,50 @@ export default function ConverterApp() {
                                         </optgroup>
                                     ))}
                                 </select>
+                                <span id="format-description" className="sr-only">
+                                    Select the output format for your converted document
+                                </span>
                             </div>
 
                             <button
                                 className="btn btn-primary"
                                 onClick={handleConvert}
                                 disabled={!selectedFile || isConverting}
+                                aria-busy={isConverting}
+                                aria-disabled={!selectedFile || isConverting}
                             >
-                                <span>⚡</span> {isConverting ? 'Converting...' : 'Convert & Download'}
+                                <span aria-hidden="true">⚡</span> {isConverting ? 'Converting...' : 'Convert & Download'}
                             </button>
 
                             {isConverting && (
-                                <div className="progress-container show">
+                                <div className="progress-container show" role="progressbar" aria-valuenow={progress.percent} aria-valuemin={0} aria-valuemax={100} aria-label="Conversion progress">
                                     <div className="progress-bar">
                                         <div className="progress-fill" style={{ width: `${progress.percent}%` }} />
                                     </div>
-                                    <p className="progress-text">{progress.message}</p>
+                                    <p className="progress-text" aria-live="polite">{progress.message}</p>
                                 </div>
                             )}
 
                             {status && (
-                                <div className={`status show ${status.type}`}>
-                                    {status.type === 'success' ? '✓' : '✗'} {status.message}
+                                <div 
+                                    className={`status show ${status.type}`} 
+                                    role="alert" 
+                                    aria-live="assertive"
+                                >
+                                    <span aria-hidden="true">{status.type === 'success' ? '✓' : '✗'}</span> {status.message}
                                 </div>
                             )}
-                        </div>
+                        </section>
                     </aside>
 
                     {/* Preview Area */}
-                    <section className="card preview-section">
+                    <section className="card preview-section" aria-labelledby="preview-heading">
                         <div className="preview-header">
                             <div className="card-header" style={{ marginBottom: 0 }}>
-                                <div className="card-icon">🖼️</div>
+                                <div className="card-icon" aria-hidden="true">🖼️</div>
                                 <div>
-                                    <div className="card-title">Page Preview</div>
-                                    <div className="card-subtitle">Click pages to load</div>
+                                    <h2 id="preview-heading" className="card-title">Page Preview</h2>
+                                    <p className="card-subtitle">Click pages to load</p>
                                 </div>
                             </div>
                             {documentInfo && documentInfo.pageCount > 0 && (
@@ -821,13 +842,14 @@ export default function ConverterApp() {
                                     className="btn btn-secondary"
                                     onClick={loadAllPages}
                                     disabled={isLoadingPreviews}
+                                    aria-busy={isLoadingPreviews}
                                     style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', marginTop: 0, width: 'auto' }}
                                 >
                                     {isLoadingPreviews ? 'Loading...' : 'Load All Pages'}
                                 </button>
                             )}
                             {documentInfo && (
-                                <div className="preview-stats">
+                                <div className="preview-stats" role="status" aria-label="Page loading statistics">
                                     <div className="stat">
                                         <div className="stat-value">{documentInfo.pageCount}</div>
                                         <div className="stat-label">Pages</div>
@@ -840,15 +862,15 @@ export default function ConverterApp() {
                             )}
                         </div>
 
-                        <div id="pagesContainer">
+                        <div id="pagesContainer" role="region" aria-label="Document pages preview">
                             {!documentInfo ? (
-                                <div className="empty-state">
-                                    <div className="empty-icon">📑</div>
+                                <div className="empty-state" aria-label="No document loaded">
+                                    <div className="empty-icon" aria-hidden="true">📑</div>
                                     <h3>No document loaded</h3>
                                     <p>Upload a document to see page previews</p>
                                 </div>
                             ) : (
-                                <div className="pages-grid">
+                                <div className="pages-grid" role="list" aria-label="Document pages">
                                     {Array.from({ length: documentInfo.pageCount }, (_, i) => {
                                         const preview = pagePreviews.find((p) => p.page === i);
                                         const isLoading = loadedPages.has(i) && !preview;
@@ -875,11 +897,11 @@ export default function ConverterApp() {
                     </section >
                 </div >
 
-                <footer>
+                <footer role="contentinfo">
                     <p>
-                        Powered by <a href="https://www.libreoffice.org/" target="_blank" rel="noreferrer">LibreOffice</a>{' '}
+                        Powered by <a href="https://www.libreoffice.org/" target="_blank" rel="noopener noreferrer">LibreOffice</a>{' '}
                         compiled to WebAssembly •{' '}
-                        <a href="https://www.npmjs.com/package/@matbee/libreoffice-converter" target="_blank" rel="noreferrer">
+                        <a href="https://www.npmjs.com/package/@matbee/libreoffice-converter" target="_blank" rel="noopener noreferrer">
                             NPM Package
                         </a>
                     </p>
@@ -951,20 +973,29 @@ function LazyPagePreview({
     }, [pageIndex, onVisibilityChange]);
 
     return (
-        <div
+        <article
             ref={elementRef}
             className="page-card"
             style={{ cursor: preview ? 'pointer' : 'default' }}
             onClick={onClick}
+            role="listitem"
+            aria-label={`Page ${pageIndex + 1}${preview ? `, ${preview.width} by ${preview.height} pixels` : isLoading ? ', loading' : ', pending'}`}
+            tabIndex={preview ? 0 : -1}
+            onKeyDown={(e) => {
+                if (preview && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onClick();
+                }
+            }}
         >
             <div className={`page-preview ${!preview && !isLoading ? 'skeleton' : ''}`}>
                 {preview ? (
                     <PageCanvas preview={preview} />
                 ) : isLoading ? (
-                    <div className="loading-spinner">Loading...</div>
+                    <div className="loading-spinner" role="status" aria-live="polite">Loading...</div>
                 ) : (
                     <>
-                        <span className="skeleton-icon">📄</span>
+                        <span className="skeleton-icon" aria-hidden="true">📄</span>
                         <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                             Scrolling loads...
                         </span>
@@ -973,7 +1004,7 @@ function LazyPagePreview({
             </div>
             <div className="page-info">
                 <span className="page-number">Page {pageIndex + 1}</span>
-                <span className={`page-badge ${preview ? 'loaded' : ''}`}>
+                <span className={`page-badge ${preview ? 'loaded' : ''}`} aria-hidden="true">
                     {preview
                         ? `${preview.width}×${preview.height}`
                         : isLoading
@@ -981,7 +1012,7 @@ function LazyPagePreview({
                             : 'pending'}
                 </span>
             </div>
-        </div>
+        </article>
     );
 }
 
