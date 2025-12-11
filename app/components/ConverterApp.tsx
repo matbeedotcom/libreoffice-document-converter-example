@@ -30,6 +30,23 @@ const OUTPUT_FORMATS: { value: OutputFormat; label: string; group: string }[] = 
     { value: 'svg', label: 'SVG', group: 'Images' },
 ];
 
+// Supported input formats for batch processing
+const SUPPORTED_INPUT_EXTENSIONS = new Set([
+    'docx', 'doc', 'odt', 'rtf', 'txt', 'html', 'htm',
+    'xlsx', 'xls', 'ods', 'csv',
+    'pptx', 'ppt', 'odp',
+    'pdf', 'png', 'jpg', 'jpeg', 'svg'
+]);
+
+function isSupportedFormat(filename: string): boolean {
+    const ext = filename.split('.').pop()?.toLowerCase() || '';
+    return SUPPORTED_INPUT_EXTENSIONS.has(ext);
+}
+
+function getFileExtension(filename: string): string {
+    return filename.split('.').pop()?.toLowerCase() || '';
+}
+
 interface PagePreview {
     page: number;
     data: Uint8Array;
