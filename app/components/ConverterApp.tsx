@@ -698,7 +698,7 @@ export default function ConverterApp() {
                         100% private — your files never leave your browser. No uploads, no server, no data collection.
                     </p>
                     <p className="powered-by">
-                        Powered by @matbee/libreoffice-converter
+                        Powered by <a href="https://github.com/matbeedotcom/libreoffice-converter" target="_blank" rel="noreferrer">@matbeedotcom/libreoffice-document-converter</a>
                     </p>
                 </header>
 
@@ -903,6 +903,12 @@ export default function ConverterApp() {
                         compiled to WebAssembly •{' '}
                         <a href="https://www.npmjs.com/package/@matbee/libreoffice-converter" target="_blank" rel="noopener noreferrer">
                             NPM Package
+                        </a>
+                    </p>
+                    <p className="support-link">
+                        Love this tool?{' '}
+                        <a href="https://buymeacoffee.com/matbee" target="_blank" rel="noopener noreferrer">
+                            ☕ Buy me a coffee
                         </a>
                     </p>
                 </footer>

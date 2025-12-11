@@ -492,6 +492,23 @@ footer a:hover {
   text-decoration: underline;
 }
 
+footer .support-link {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+footer .support-link a {
+  color: var(--accent);
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+footer .support-link a:hover {
+  opacity: 0.8;
+  text-decoration: none;
+}
+
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
