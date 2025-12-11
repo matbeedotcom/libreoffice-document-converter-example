@@ -142,6 +142,8 @@ export default function ConverterApp() {
     const converterRef = useRef<WorkerBrowserConverter | null>(null);
     const initializationPromiseRef = useRef<Promise<WorkerBrowserConverter> | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const lastProgressTimeRef = useRef<number>(Date.now());
+    const lastProgressMessageRef = useRef<string>('');
 
     // Initialize converter
     const getConverter = useCallback(async () => {
@@ -161,7 +163,11 @@ export default function ConverterApp() {
                     ...createWasmPaths('/wasm/'),
                     browserWorkerJs: '/dist/browser.worker.global.js',
                     verbose: false,
-                    onProgress: (p) => setProgress({ percent: p.percent, message: p.message }),
+                    onProgress: (p) => {
+                        lastProgressTimeRef.current = Date.now();
+                        lastProgressMessageRef.current = p.message;
+                        setProgress({ percent: p.percent, message: p.message });
+                    },
                 });
 
                 await converter.initialize();
@@ -246,6 +252,7 @@ export default function ConverterApp() {
         let copied = 0;
         let failed = 0;
         let current = 0;
+        const maxRetries = 2;
 
         const eligibleFiles = batchFiles.filter(
             (f) => f.status !== 'unsupported'
@@ -263,54 +270,92 @@ export default function ConverterApp() {
                 )
             );
 
-            try {
-                let resultData: Uint8Array;
+            let lastError: Error | null = null;
+            let success = false;
 
-                if (ext === outputFormat) {
-                    // Same format: copy as-is
-                    const buffer = await batchFile.file.arrayBuffer();
-                    resultData = new Uint8Array(buffer);
-                    copied++;
+            for (let attempt = 0; attempt <= maxRetries && !success; attempt++) {
+                try {
+                    let resultData: Uint8Array;
 
-                    setBatchFiles((prev) =>
-                        prev.map((f) =>
-                            f.id === batchFile.id
-                                ? {
-                                      ...f,
-                                      status: 'copied' as BatchFileStatus,
-                                      storageKey,
-                                      resultSize: resultData.byteLength,
-                                  }
-                                : f
-                        )
-                    );
-                } else {
-                    // Convert the file
-                    const inputFormat = ext as InputFormat;
-                    const result = await converter.convertFile(batchFile.file, {
-                        inputFormat,
-                        outputFormat,
-                    });
-                    resultData = result.data;
-                    converted++;
+                    if (ext === outputFormat) {
+                        // Same format: copy as-is
+                        const buffer = await batchFile.file.arrayBuffer();
+                        resultData = new Uint8Array(buffer);
+                        copied++;
 
-                    setBatchFiles((prev) =>
-                        prev.map((f) =>
-                            f.id === batchFile.id
-                                ? {
-                                      ...f,
-                                      status: 'done' as BatchFileStatus,
-                                      storageKey,
-                                      resultSize: resultData.byteLength,
-                                  }
-                                : f
-                        )
-                    );
+                        setBatchFiles((prev) =>
+                            prev.map((f) =>
+                                f.id === batchFile.id
+                                    ? {
+                                          ...f,
+                                          status: 'copied' as BatchFileStatus,
+                                          storageKey,
+                                          resultSize: resultData.byteLength,
+                                      }
+                                    : f
+                            )
+                        );
+                        success = true;
+                    } else {
+                        // Convert the file with stage timeout
+                        const inputFormat = ext as InputFormat;
+                        const stageTimeout = 30000; // 30 seconds per stage
+                        let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+                        // Reset progress tracking for this file
+                        lastProgressTimeRef.current = Date.now();
+                        lastProgressMessageRef.current = 'Starting...';
+
+                        const result = await new Promise<ConversionResult>((resolve, reject) => {
+                            const checkStageTimeout = () => {
+                                const elapsed = Date.now() - lastProgressTimeRef.current;
+                                if (elapsed > stageTimeout) {
+                                    reject(new Error(`Conversion stalled at stage: ${lastProgressMessageRef.current || 'unknown'}`));
+                                } else {
+                                    timeoutId = setTimeout(checkStageTimeout, 5000); // Check every 5 seconds
+                                }
+                            };
+                            timeoutId = setTimeout(checkStageTimeout, stageTimeout);
+
+                            converter.convertFile(batchFile.file, {
+                                inputFormat,
+                                outputFormat,
+                            }).then(resolve).catch(reject).finally(() => {
+                                if (timeoutId) clearTimeout(timeoutId);
+                            });
+                        });
+
+                        resultData = result.data;
+                        converted++;
+
+                        setBatchFiles((prev) =>
+                            prev.map((f) =>
+                                f.id === batchFile.id
+                                    ? {
+                                          ...f,
+                                          status: 'done' as BatchFileStatus,
+                                          storageKey,
+                                          resultSize: resultData.byteLength,
+                                      }
+                                    : f
+                            )
+                        );
+                        success = true;
+                    }
+
+                    // Store in IndexedDB
+                    await storeConvertedFile(storageKey, resultData!);
+                } catch (error) {
+                    lastError = error as Error;
+                    console.error(`Batch conversion attempt ${attempt + 1} failed for ${batchFile.file.name}:`, error);
+                    // Wait a bit before retrying
+                    if (attempt < maxRetries) {
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                    }
                 }
+            }
 
-                // Store in IndexedDB
-                await storeConvertedFile(storageKey, resultData);
-            } catch (error) {
+            if (!success) {
                 failed++;
                 setBatchFiles((prev) =>
                     prev.map((f) =>
@@ -318,7 +363,7 @@ export default function ConverterApp() {
                             ? {
                                   ...f,
                                   status: 'failed' as BatchFileStatus,
-                                  error: (error as Error).message,
+                                  error: lastError?.message || 'Unknown error',
                               }
                             : f
                     )
