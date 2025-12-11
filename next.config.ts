@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
     return config;
   },
   // Experimental: use server external packages for API routes
-  serverExternalPackages: ['@matbee/libreoffice-converter'],
+  serverExternalPackages: ['@matbee/libreoffice-converter', 'sharp'],
   // Required headers for SharedArrayBuffer (WASM threading)
   async headers() {
     return [

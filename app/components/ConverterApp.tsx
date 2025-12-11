@@ -108,7 +108,6 @@ function formatBytes(bytes: number): string {
 
 import dynamic from 'next/dynamic';
 
-const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false });
 const BatchPanel = dynamic(() => import('./BatchPanel'), { ssr: false });
 
 interface ConverterAppProps {

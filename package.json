@@ -13,8 +13,6 @@
   },
   "dependencies": {
     "@ai-sdk/react": "^2.0.106",
-    "@built-in-ai/transformers-js": "^0.3.3",
-    "@huggingface/transformers": "^3.8.1",
     "@matbee/libreoffice-converter": "^1.7.0",
     "ai": "^5.0.106",
     "jszip": "^3.10.1",
