@@ -16,9 +16,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import JSZip from 'jszip';
-import { WorkerConverter } from '@matbee/libreoffice-converter/server'
+import { LibreOfficeConverter } from '@matbee/libreoffice-converter/server'
 
-const converter = new WorkerConverter({
+const converter = new LibreOfficeConverter({
   verbose: true,
   onProgress: (progress) => {
     console.log(`[Converter Progress] ${progress.phase} - ${progress.percent}% - ${progress.message}`);
