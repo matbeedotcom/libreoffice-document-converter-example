@@ -8,6 +8,10 @@ import type {
 } from '@matbee/libreoffice-converter';
 
 import { WorkerBrowserConverter, createWasmPaths } from '@matbee/libreoffice-converter/browser';
+import type { BatchFile, BatchProgress, BatchFileStatus } from '../types/batch';
+import type { ZipFile } from '../utils/zipBuilder';
+import { storeConvertedFile, clearAllConvertedFiles } from '../utils/batchStorage';
+import { buildZipFiles, downloadZipFile } from '../utils/zipBuilder';
 
 // Output format options
 const OUTPUT_FORMATS: { value: OutputFormat; label: string; group: string }[] = [
@@ -49,6 +53,7 @@ function formatBytes(bytes: number): string {
 import dynamic from 'next/dynamic';
 
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false });
+const BatchPanel = dynamic(() => import('./BatchPanel'), { ssr: false });
 
 export default function ConverterApp() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -63,6 +68,20 @@ export default function ConverterApp() {
     const [loadedPages, setLoadedPages] = useState<Set<number>>(new Set());
     const [isDragging, setIsDragging] = useState(false);
     const [selectedPageIndex, setSelectedPageIndex] = useState<number | null>(null);
+
+    // Batch mode state
+    const [isBatchMode, setIsBatchMode] = useState(false);
+    const [batchFiles, setBatchFiles] = useState<BatchFile[]>([]);
+    const [batchProgress, setBatchProgress] = useState<BatchProgress>({
+        current: 0,
+        total: 0,
+        converted: 0,
+        copied: 0,
+        failed: 0,
+    });
+    const [batchFolderName, setBatchFolderName] = useState('converted-files');
+    const [isBatchConverting, setIsBatchConverting] = useState(false);
+    const [zipFiles, setZipFiles] = useState<ZipFile[]>([]);
 
     const converterRef = useRef<WorkerBrowserConverter | null>(null);
     const initializationPromiseRef = useRef<Promise<WorkerBrowserConverter> | null>(null);
