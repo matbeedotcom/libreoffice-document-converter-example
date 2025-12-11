@@ -47,6 +47,45 @@ function getFileExtension(filename: string): string {
     return filename.split('.').pop()?.toLowerCase() || '';
 }
 
+// Recursively read directory entries
+async function readDirectoryEntries(
+    entry: FileSystemDirectoryEntry
+): Promise<File[]> {
+    const files: File[] = [];
+    const reader = entry.createReader();
+
+    const readBatch = (): Promise<FileSystemEntry[]> => {
+        return new Promise((resolve, reject) => {
+            reader.readEntries(resolve, reject);
+        });
+    };
+
+    const getFile = (fileEntry: FileSystemFileEntry): Promise<File> => {
+        return new Promise((resolve, reject) => {
+            fileEntry.file(resolve, reject);
+        });
+    };
+
+    // Read in batches (readEntries may not return all at once)
+    let batch: FileSystemEntry[];
+    do {
+        batch = await readBatch();
+        for (const item of batch) {
+            if (item.isFile) {
+                const file = await getFile(item as FileSystemFileEntry);
+                files.push(file);
+            } else if (item.isDirectory) {
+                const subFiles = await readDirectoryEntries(
+                    item as FileSystemDirectoryEntry
+                );
+                files.push(...subFiles);
+            }
+        }
+    } while (batch.length > 0);
+
+    return files;
+}
+
 interface PagePreview {
     page: number;
     data: Uint8Array;
