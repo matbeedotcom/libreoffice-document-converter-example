@@ -21,11 +21,9 @@
     "next": "16.0.7",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "sharp": "^0.34.5",
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4",
     "@types/jszip": "^3.4.1",
     "@types/node": "^20",
