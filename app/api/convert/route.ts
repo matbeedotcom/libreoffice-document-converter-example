@@ -17,9 +17,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import JSZip from 'jszip';
 import { LibreOfficeConverter } from '@matbee/libreoffice-converter/server'
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const wasmLoader = require('@matbee/libreoffice-converter/wasm/loader');
 
 const converter = new LibreOfficeConverter({
   verbose: true,
+  wasmLoader,
   onProgress: (progress) => {
     console.log(`[Converter Progress] ${progress.phase} - ${progress.percent}% - ${progress.message}`);
   },
