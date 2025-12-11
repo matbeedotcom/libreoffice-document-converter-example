@@ -4,10 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@huggingface/transformers': 3.8.1
-  '@matbee/libreoffice-converter': link:../node-libreoffice-v2
-
 importers:
 
   .:
@@ -19,11 +15,11 @@ importers:
         specifier: ^0.3.3
         version: 0.3.3(ai@5.0.106(zod@4.1.13))
       '@huggingface/transformers':
-        specifier: 3.8.1
+        specifier: ^3.8.1
         version: 3.8.1
       '@matbee/libreoffice-converter':
-        specifier: link:../node-libreoffice-v2
-        version: link:../node-libreoffice-v2
+        specifier: ^1.7.0
+        version: 1.7.0(sharp@0.34.5)
       ai:
         specifier: ^5.0.106
         version: 5.0.106(zod@4.1.13)
@@ -566,6 +562,15 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@matbee/libreoffice-converter@1.7.0':
+    resolution: {integrity: sha512-0VsBKrWexwHmsvTkBM4vBjEmiF+HcmYhK44gCaJjbE2UaKduYw+9JXc1t+T1J0PNiv5tpgrEAyYPAElpQjGeRA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      sharp: '>=0.32.0'
+    peerDependenciesMeta:
+      sharp:
+        optional: true
 
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
@@ -2795,6 +2800,12 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@matbee/libreoffice-converter@1.7.0(sharp@0.34.5)':
+    dependencies:
+      zod: 4.1.13
+    optionalDependencies:
+      sharp: 0.34.5
 
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
