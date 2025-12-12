@@ -12,8 +12,8 @@ importers:
         specifier: ^2.0.106
         version: 2.0.114(react@19.2.0)(zod@4.1.13)
       '@matbee/libreoffice-converter':
-        specifier: ^1.8.0
-        version: 1.8.0(sharp@0.34.5)
+        specifier: ^1.9.0
+        version: 1.9.0(sharp@0.34.5)(zod@4.1.13)
       ai:
         specifier: ^5.0.106
         version: 5.0.112(zod@4.1.13)
@@ -535,11 +535,12 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@matbee/libreoffice-converter@1.8.0':
-    resolution: {integrity: sha512-4HUPy04/m8WzwmzmDytGwS39GaNL3u4HgnEZDzr/kqrYt8/GKBKNWH4Uk4YMo5GEP5O0sRREL9gaT1HSiZzm8g==}
+  '@matbee/libreoffice-converter@1.9.0':
+    resolution: {integrity: sha512-5isDAwZzxmusyCdzkSP+oiMnAfIKjL8KRH/zqh/L/j9DCM+C1USQwsrVrG/zmurRMiPwUZw85wt5vmRtwMBbVQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       sharp: '>=0.32.0'
+      zod: ^4.1.13
     peerDependenciesMeta:
       sharp:
         optional: true
@@ -2615,7 +2616,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@matbee/libreoffice-converter@1.8.0(sharp@0.34.5)':
+  '@matbee/libreoffice-converter@1.9.0(sharp@0.34.5)(zod@4.1.13)':
     dependencies:
       zod: 4.1.13
     optionalDependencies:
