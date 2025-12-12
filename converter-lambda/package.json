@@ -1,0 +1,15 @@
+{
+  "name": "converter-lambda",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AWS Lambda document conversion service using LibreOffice WASM",
+  "main": "index.mjs",
+  "scripts": {
+    "build": "docker build -t converter-lambda .",
+    "test-local": "docker run -p 9000:8080 converter-lambda"
+  },
+  "dependencies": {
+    "@matbee/libreoffice-converter": "^1.7.0",
+    "jszip": "^3.10.1"
+  }
+}
