@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import ConversionLandingPage, { ConversionType } from "../components/ConversionLandingPage";
-import VLMProvider from "../context/VLMContext";
 
 const siteUrl = "https://convertmydocuments.com";
 
@@ -131,9 +130,7 @@ export default function ExcelToPdfPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <VLMProvider>
         <ConversionLandingPage conversion={conversion} />
-      </VLMProvider>
     </>
   );
 }
