@@ -9,7 +9,7 @@
     "build:turbo": "next build",
     "start": "next start",
     "lint": "eslint",
-    "copy-assets": "mkdir -p public/dist public/wasm && cp node_modules/@matbee/libreoffice-converter/dist/browser.worker.global.js* public/dist/ && cp -r node_modules/@matbee/libreoffice-converter/wasm/* public/wasm/ && gzip -9 -f public/wasm/soffice.wasm && mv public/wasm/soffice.wasm.gz public/wasm/soffice.wasm && gzip -9 -f public/wasm/soffice.data && mv public/wasm/soffice.data.gz public/wasm/soffice.data"
+    "copy-assets": "mkdir -p public/dist public/wasm && cp node_modules/@matbee/libreoffice-converter/dist/browser.worker.global.js* public/dist/ && cp -r node_modules/@matbee/libreoffice-converter/wasm/* public/wasm/ && gunzip -f public/wasm/soffice.wasm.gz && gunzip -f public/wasm/soffice.data.gz"
   },
   "dependencies": {
     "@ai-sdk/react": "^2.0.106",
