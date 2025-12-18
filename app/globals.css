@@ -10,7 +10,7 @@
   --success-dark: #047857;
   --error: #ef4444;
   --error-dark: #dc2626;
-  
+
   /* Card/component colors - light mode */
   --card-bg: #ffffff;
   --card-bg-alt: #f8fafc;
@@ -19,12 +19,12 @@
   --card-text-heading: #0f172a;
   --card-text-muted: #64748b;
   --card-text-subtle: #94a3b8;
-  
+
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  
+
   /* Legacy variables for backwards compatibility */
   --background: #f8fafc;
   --foreground: #0f172a;
@@ -42,11 +42,11 @@
     --card-text-heading: #f1f5f9;
     --card-text-muted: #94a3b8;
     --card-text-subtle: #64748b;
-    
+
     /* Status colors - dark mode (lighter for better visibility) */
     --success-dark: #34d399;
     --error-dark: #f87171;
-    
+
     /* Legacy variables */
     --background: #0f172a;
     --foreground: #f8fafc;
@@ -77,9 +77,9 @@ body {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem 2rem;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -87,7 +87,7 @@ body {
 
 header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 0;
 }
 
 header h1 {
@@ -180,7 +180,8 @@ header h1 {
   color: var(--card-text);
 }
 
-.drop-zone:hover, .drop-zone.active {
+.drop-zone:hover,
+.drop-zone.active {
   border-color: var(--primary);
   background: rgba(59, 130, 246, 0.05);
   transform: scale(1.01);
@@ -435,7 +436,7 @@ select:focus {
     color: #34d399;
     border-color: rgba(16, 185, 129, 0.3);
   }
-  
+
   .success-support-link:hover {
     background: rgba(16, 185, 129, 0.3);
     border-color: rgba(16, 185, 129, 0.5);
@@ -447,6 +448,7 @@ select:focus {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -641,18 +643,35 @@ footer .support-link a:hover {
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* Batch Panel Styles */
@@ -957,6 +976,7 @@ footer .support-link a:hover {
 
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

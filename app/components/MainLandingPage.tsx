@@ -98,43 +98,19 @@ export default function MainLandingPage() {
       {/* Skip to main content link */}
       <a href="#converter" className="skip-link">Skip to converter</a>
       
-      {/* Hero Section */}
-      <header className="landing-hero" role="banner">
-        <div className="hero-content">
-          <div className="hero-badge" role="status" aria-label="Privacy guarantee">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-            <span>100% Private — Files Never Leave Your Browser</span>
+      {/* App Header */}
+      <header className="app-header" role="banner">
+        <div className="app-header-content">
+          <h1>Document Converter</h1>
+          <div className="header-info">
+            <span className="header-blurb">Works offline • Files never leave your browser</span>
+            <div className="privacy-badge" role="status" aria-label="Privacy guarantee">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <span>100% Private</span>
+            </div>
           </div>
-          <h1>Free Office Document Converter</h1>
-          <p className="hero-description">
-            Convert Word, Excel, PowerPoint, PDF and more — completely free, with no uploads. 
-            Powered by LibreOffice WebAssembly technology running entirely in your browser.
-          </p>
-          <ul className="hero-features" role="list" aria-label="Key benefits">
-            <li className="feature-pill">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-              No Sign-up
-            </li>
-            <li className="feature-pill">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-              No Limits
-            </li>
-            <li className="feature-pill">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-              No Ads
-            </li>
-          </ul>
         </div>
       </header>
 
@@ -253,82 +229,62 @@ export default function MainLandingPage() {
           text-decoration: none;
         }
 
-        .landing-hero {
-          padding: 4rem 2rem;
-          text-align: center;
-          background: linear-gradient(180deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%);
+        .app-header {
+          padding: 0.75rem 1.5rem;
+          background: rgba(15, 23, 42, 0.8);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(8px);
         }
 
-        .hero-content {
-          max-width: 800px;
+        .app-header-content {
+          max-width: 1400px;
           margin: 0 auto;
-        }
-
-        .hero-badge {
-          display: inline-flex;
+          display: flex;
           align-items: center;
-          gap: 0.5rem;
-          padding: 0.5rem 1.25rem;
-          background: rgba(16, 185, 129, 0.15);
-          border: 1px solid rgba(16, 185, 129, 0.25);
-          border-radius: 100px;
-          margin-bottom: 1.5rem;
-          color: #a7f3d0;
-          font-size: 0.9rem;
+          justify-content: space-between;
+          gap: 1rem;
         }
 
-        .hero-badge svg {
-          color: #10b981;
-        }
-
-        .landing-hero h1 {
-          font-size: clamp(2.5rem, 6vw, 4rem);
-          font-weight: 800;
+        .app-header h1 {
+          font-size: 1.25rem;
+          font-weight: 700;
           background: linear-gradient(90deg, #ffffff 0%, #94a3b8 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          margin: 0 0 1rem 0;
-          line-height: 1.1;
+          margin: 0;
           letter-spacing: -0.02em;
         }
 
-        .hero-description {
-          font-size: 1.25rem;
-          color: #94a3b8;
-          margin: 0 0 2rem 0;
-          line-height: 1.6;
-        }
-
-        .hero-features {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 1rem;
-          list-style: none;
-          padding: 0;
-          margin: 0;
-        }
-
-        .feature-pill {
+        .privacy-badge {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
-          padding: 0.75rem 1.25rem;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          gap: 0.375rem;
+          padding: 0.25rem 0.625rem;
+          background: rgba(16, 185, 129, 0.15);
+          border: 1px solid rgba(16, 185, 129, 0.25);
           border-radius: 100px;
-          color: #e2e8f0;
-          font-size: 0.9rem;
-          list-style: none;
+          color: #a7f3d0;
+          font-size: 0.75rem;
         }
 
-        .feature-pill svg {
+        .privacy-badge svg {
           color: #10b981;
         }
 
+        .header-info {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+
+        .header-blurb {
+          font-size: 0.8rem;
+          color: #94a3b8;
+        }
+
         .converter-section {
-          padding: 0 1rem 4rem;
+          padding: 1rem 1rem 2rem;
         }
 
         .section-container {
