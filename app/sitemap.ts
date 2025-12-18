@@ -18,7 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: siteUrl,
       lastModified,
-      changeFrequency: "weekly",
+      changeFrequency: "monthly",
       priority: 1,
     },
     // Conversion-specific landing pages for SEO
